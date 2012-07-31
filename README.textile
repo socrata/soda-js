@@ -23,7 +23,6 @@ consumer.query()
     .on('success', function(rows) { console.log(rows); })
     .on('error', function(error) { console.error(error); });
 
-
 h2. license
 
 provided under the mit license.
