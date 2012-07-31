@@ -10,9 +10,9 @@ h2. sample code
 
 See the @sample/@ directory for sample code, but here's the general idea:
 
-bc.. var soda = require('soda-js')
+bc.. var soda = require('soda-js');
 
-var consumer = new soda.Consumer('explore.data.gov')
+var consumer = new soda.Consumer('explore.data.gov');
 
 consumer.query()
   .withDataset('644b-gaut')
@@ -22,4 +22,9 @@ consumer.query()
   .getRows()
     .on('success', function(rows) { console.log(rows); })
     .on('error', function(error) { console.error(error); });
+
+
+h2. license
+
+provided under the mit license.
 
