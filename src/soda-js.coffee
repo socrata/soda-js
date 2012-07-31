@@ -134,14 +134,18 @@ class Query
   # for passing in a fully formed soql query. all other params will be ignored
   soql: (query) -> @_soql = query; this
 
+  select: (selects...) -> @_select.push(select) for select in selects; this
+
   # args: ('clause', [...])
   #       ({ column: value1, columnb: value2 }, [...]])
   # multiple calls are assumed to be and-chained
   where: (args...) -> addExpr(@_where, args); this
   having: (args...) -> addExpr(@_having, args); this
 
+  group: (groups...) -> @_group.push(group) for group in groups; this
+
   # args: ("column direction", ["column direction", [...]])
-  order: (orders...) -> @_order.push(order) for order in orders; this
+  order: (orders...) -> @_order.push(handleOrder(order)) for order in orders; this
 
   offset: (offset) -> @_offset = offset; this
 
@@ -186,13 +190,13 @@ class Query
     else
       query.select = @_select.join(', ') if @_select.length > 0
 
-      query.where = expr.and(@_where) if @_where.length > 0
+      query.where = expr.and.apply(this, @_where) if @_where.length > 0
 
       query.group = @_group.join(', ') if @_group.length > 0
 
       if @_having.length > 0
         throw new Error('Having provided without group by!') unless @_group.length > 0
-        query.having = expr.and(@_having)
+        query.having = expr.and.apply(this, @_having)
 
       query.order = @_order.join(', ') if @_order.length > 0
 
