@@ -71,7 +71,7 @@ task 'watch', 'compile and watch', -> build true, -> log ":-)", green
 # ```
 # cake test
 # ```
-task 'test', 'run tests', -> build -> expresso 'test/*' -> log ":)", green
+task 'test', 'run tests', -> build -> expresso [ 'test/*' ], -> log ":)", green
 
 # ## *clean*
 #
@@ -194,17 +194,17 @@ moduleExists = (name) ->
     false
 
 
-# ## *mocha*
+# ## *expresso*
 #
 # **given** optional array of option flags
 # **and** optional function as callback
-# **then** invoke launch passing mocha command
+# **then** invoke launch passing expresso command
 expresso = (options, callback) ->
   if typeof options is 'function'
     callback = options
     options = []
   
-  launch 'expresso', options, callback
+  launch './node_modules/expresso/bin/expresso', options, callback
 
 # ## *docco*
 #
