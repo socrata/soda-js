@@ -1,0 +1,13 @@
+{
+  "name": "soda-js",
+  "description": "js library for accessing a soda2 api",
+  "homepage": "dev.socrata.com",
+  "keywords": [ "socrata", "soda", "api", "opendata", "open data" ],
+  "contributors": [{ "name": "Clint Tseng", "email": "clint.tseng@socrata.com" }],
+  "dependencies": [ "superagent", "eventemitter2" ],
+  "homepage": "https://github.com/socrata/soda-js",
+  "devDependencies": [],
+  "licenses": [{ "type": "MIT" }],
+  "main": "./compiled/socrata.js",
+  "version": "0.1.0"
+}
