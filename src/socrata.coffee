@@ -117,6 +117,7 @@ class Consumer
 
   getDataset: (id) ->
     emitter = new EventEmitter(@emitterOpts)
+    # TODO: implement me
 
 # querybuilder class
 class Query
