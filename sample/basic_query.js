@@ -1,6 +1,6 @@
-var soda = require('soda-js')
+var soda = require('soda-js');
 
-var consumer = new soda.Consumer('explore.data.gov')
+var consumer = new soda.Consumer('explore.data.gov');
 
 consumer.query()
   .withDataset('644b-gaut')
