@@ -165,7 +165,7 @@ class Query
         if response.accepted
           # handle 202 by remaking request. inform of possible progress.
           emitter.emit('progress', response.body)
-          @consumer.networker(opts)(handler)
+          setTimeout((-> @consumer.networker(opts)(handler)), 5000)
         else
           emitter.emit('success', response.body)
       else
