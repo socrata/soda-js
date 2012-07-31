@@ -1,4 +1,4 @@
-h1. soda-js
+h1. soda-js "!https://secure.travis-ci.org/socrata/soda-js.png!":http://travis-ci.org/socrata/soda-js
 
 A client implementation of the Socrata Open Data API in Coffeescript and Javascript.
 
