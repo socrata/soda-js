@@ -1,5 +1,5 @@
 
-soda = require('soda-js')
+soda = require('../lib/soda-js')
 
 module.exports =
   

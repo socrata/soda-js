@@ -1,4 +1,4 @@
-var soda = require('../lib/soda-js');
+var soda = require('soda-js');
 
 var consumer = new soda.Consumer('explore.data.gov');
 
