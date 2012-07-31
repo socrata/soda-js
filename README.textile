@@ -1,0 +1,25 @@
+h1. soda-js
+
+A client implementation of the Socrata Open Data API in Coffeescript and Javascript.
+
+h2. supported operations
+
+Currently, only the consumer API is supported. You can query a dataset by SODA2 clauses, or supply a custom SoQL query to be run.
+
+h2. sample code
+
+See the @sample/@ directory for sample code, but here's the general idea:
+
+bc.. var soda = require('soda-js')
+
+var consumer = new soda.Consumer('explore.data.gov')
+
+consumer.query()
+  .withDataset('644b-gaut')
+  .limit(5)
+  .where({ namelast: 'SMITH' })
+  .order('namelast')
+  .getRows()
+    .on('success', function(rows) { console.log(rows); })
+    .on('error', function(error) { console.error(error); });
+
