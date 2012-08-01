@@ -11,6 +11,6 @@
   "scripts": {
     "test": "expresso test/*"
   },
-  "main": "./lib/socrata.js",
+  "main": "./lib/soda-js.js",
   "version": "0.1.0"
 }
