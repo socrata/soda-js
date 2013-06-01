@@ -3,11 +3,12 @@ soda = require('../lib/soda-js')
 
 # fixture generator to allow injecting verifiers as networkers
 consumer = (verifier) ->
-  networker: ((opts) -> verifier(opts); -> null),
-  emitterOpts:
-    wildcard: true,
-    delimiter: '.',
-    maxListeners: 15
+  connection:
+    networker: ((opts) -> verifier(opts); -> null),
+    emitterOpts:
+      wildcard: true,
+      delimiter: '.',
+      maxListeners: 15
 
 # convenience func for using the above fixture with a query
 queryWith = (networker) -> new soda._internal.Query(consumer(networker))

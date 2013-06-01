@@ -88,8 +88,8 @@ expr =
   lte: (column, literal) -> "#{column} <= #{handleLiteral(literal)}"
   eq:  (column, literal) -> "#{column} = #{handleLiteral(literal)}"
 
-# main class
-class Consumer
+
+class Connection
   constructor: (@dataSite, @sodaOpts = {}) ->
     throw new Error('dataSite does not appear to be valid! Please supply a domain name, eg data.seattle.gov') unless /^([a-z0-9-_]+\.)+([a-z0-9-_]+)$/i.test(@dataSite)
 
@@ -99,18 +99,48 @@ class Consumer
       delimiter: '.',
       maxListeners: 15
 
-    # a function that takes options and returns a superagent (handler) -> void of the resulting request
-    @networker = (opts) ->
+    @networker = (opts, data) ->
       url = "https://#{@dataSite}#{opts.path}"
 
       client = httpClient(opts.method, url)
 
+      client.set('Accept', "application/json") if data?
+      client.set('Content-type', "application/json") if data?
       client.set('X-App-Token', @sodaOpts.apiToken) if @sodaOpts.apiToken?
-      client.set('Authorization', toBase64("#{@sodaOpts.username}:#{@sodaOpts.password}")) if @sodaOpts.username? and @sodaOpts.password?
+      client.set('Authorization', "Basic " + toBase64("#{@sodaOpts.username}:#{@sodaOpts.password}")) if @sodaOpts.username? and @sodaOpts.password?
 
       client.query(opts.query) if opts.query?
+      client.send(data) if data?
 
-      (responseHandler) -> client.end(responseHandler)
+      (responseHandler) => client.end(responseHandler || @getDefaultHandler())
+
+  getDefaultHandler: ->
+    # instance variable for easy chaining
+    @emitter = emitter = new EventEmitter(@emitterOpts)
+
+    # return the handler
+    handler = (response) ->
+      # TODO: possibly more granular handling?
+      if response.ok
+        if response.accepted
+          # handle 202 by remaking request. inform of possible progress.
+          emitter.emit('progress', response.body)
+          setTimeout((-> @consumer.networker(opts)(handler)), 5000)
+        else
+          emitter.emit('success', response.body)
+      else
+        emitter.emit('error', response.body ? response.text)
+
+      # just emit the raw superagent obj if they just want complete event
+      emitter.emit('complete', response)
+
+
+
+
+# main class
+class Consumer
+  constructor: (@dataSite, @sodaOpts = {}) ->
+    @connection = new Connection(dataSite, sodaOpts)
 
   query: ->
     new Query(this)
@@ -118,6 +148,65 @@ class Consumer
   getDataset: (id) ->
     emitter = new EventEmitter(@emitterOpts)
     # TODO: implement me
+
+# Producer class
+class Producer
+  constructor: (@dataSite, @sodaOpts = {}) ->
+    @connection = new Connection(dataSite, sodaOpts)
+
+  operation: ->
+    new Operation(this)
+
+class Operation
+  constructor: (@producer) ->
+
+  withDataset: (datasetId) -> @_datasetId = datasetId; this
+
+  # truncate the entire dataset
+  truncate: ->
+    opts = method: 'delete'
+    opts.path = "/resource/#{@_datasetId}"
+    this._exec(opts)
+
+  # add a new row - explicitly avoids upserting (updating/deleting existing rows)
+  add: (data) ->
+    opts = method: 'post'
+    opts.path = "/resource/#{@_datasetId}"
+
+    _data = JSON.parse(JSON.stringify(data))
+    delete _data[':id']
+    delete _data[':delete']
+    for obj in _data
+      delete obj[':id']
+      delete obj[':delete']
+
+    this._exec(opts, _data)
+
+  # modify existing rows
+  delete: (id) ->
+    opts = method: 'delete'
+    opts.path = "/resource/#{@_datasetId}/#{id}"
+    this._exec(opts)
+  update: (id, data) ->
+    opts = method: 'post'
+    opts.path = "/resource/#{@_datasetId}/#{id}"
+    this._exec(opts, data)
+  replace: (id, data) ->
+    opts = method: 'put'
+    opts.path = "/resource/#{@_datasetId}/#{id}"
+    this._exec(opts, data)
+  
+  # add objects, update if existing, delete if :delete=true
+  upsert: (data) ->
+    opts = method: 'post'
+    opts.path = "/resource/#{@_datasetId}"
+    this._exec(opts, data)
+
+  _exec: (opts, data) ->
+    throw new Error('no dataset given to work against!') unless @_datasetId?
+    @producer.connection.networker(opts, data)()
+    @producer.connection.emitter
+
 
 # querybuilder class
 class Query
@@ -161,26 +250,8 @@ class Query
     opts.query = {}
     opts.query['$' + k] = v for k, v of queryComponents
 
-    emitter = new EventEmitter(@consumer.emitterOpts)
-
-    handler = (response) ->
-      # TODO: possibly more granular handling?
-      if response.ok
-        if response.accepted
-          # handle 202 by remaking request. inform of possible progress.
-          emitter.emit('progress', response.body)
-          setTimeout((-> @consumer.networker(opts)(handler)), 5000)
-        else
-          emitter.emit('success', response.body)
-      else
-        emitter.emit('error', response.body ? response.text)
-
-      # just emit the raw superagent obj if they just want complete event
-      emitter.emit('complete', response)
-
-    @consumer.networker(opts)(handler)
-
-    emitter
+    @consumer.connection.networker(opts)()
+    @consumer.connection.emitter
 
   _buildQueryComponents: ->
     query = {}
@@ -211,11 +282,14 @@ class Dataset
 
 extend(exports ? this.soda,
   Consumer: Consumer,
+  Producer: Producer,
   expr: expr,
 
   # exported for testing reasons
   _internal:
+    Connection: Connection,
     Query: Query,
+    Operation: Operation,
     util:
       toBase64: toBase64,
       handleLiteral: handleLiteral,
