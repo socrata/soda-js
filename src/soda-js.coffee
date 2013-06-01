@@ -108,6 +108,7 @@ class Connection
       client.set('Content-type', "application/json") if data?
       client.set('X-App-Token', @sodaOpts.apiToken) if @sodaOpts.apiToken?
       client.set('Authorization', "Basic " + toBase64("#{@sodaOpts.username}:#{@sodaOpts.password}")) if @sodaOpts.username? and @sodaOpts.password?
+      client.set('Authorization', "OAuth " + accessToken) if @sodaOpts.accessToken?
 
       client.query(opts.query) if opts.query?
       client.send(data) if data?
