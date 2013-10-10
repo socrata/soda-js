@@ -91,7 +91,7 @@ expr =
 
 class Connection
   constructor: (@dataSite, @sodaOpts = {}) ->
-    throw new Error('dataSite does not appear to be valid! Please supply a domain name, eg data.seattle.gov') unless /^([a-z0-9-_]+\.)+([a-z0-9-_]+)$/i.test(@dataSite)
+    throw new Error('dataSite does not appear to be valid! Please supply a domain name, eg data.seattle.gov') unless /^[a-z0-9-_.]+(:[0-9]+)?$/i.test(@dataSite)
 
     # options passed directly into EventEmitter2 construction
     @emitterOpts = @sodaOpts.emitterOpts ?
