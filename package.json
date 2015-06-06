@@ -4,7 +4,10 @@
   "homepage": "dev.socrata.com",
   "keywords": [ "socrata", "soda", "api", "opendata", "open data" ],
   "contributors": [{ "name": "Clint Tseng", "email": "clint.tseng@socrata.com" }],
-  "dependencies": [ "superagent", "eventemitter2" ],
+  "dependencies": {
+    "eventemitter2": "",
+    "superagent": "~0.21.0"
+  },
   "homepage": "https://github.com/socrata/soda-js",
   "devDependencies": [ "coffee-script", "expresso" ],
   "licenses": [{ "type": "MIT" }],
