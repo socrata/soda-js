@@ -89,11 +89,10 @@ expr =
   eq:  (column, literal) -> "#{column} = #{handleLiteral(literal)}"
   
 # serialize object to querystring
-serialize = (obj) ->
+toQuerystring = (obj) ->
   str = []
-  for p of obj
-    if obj.hasOwnProperty(p)
-      str.push encodeURIComponent(p) + '=' + encodeURIComponent(obj[p])
+  for own key, val of obj
+    str.push encodeURIComponent(key) + '=' + encodeURIComponent(val)
   str.join '&'
 
 class Connection
@@ -262,7 +261,7 @@ class Query
     
   getURL: ->
     opts = this.getOpts()
-    query = serialize(opts.query)
+    query = toQuerystring(opts.query)
     
     "https://#{@consumer.dataSite}#{opts.path}" + (if query then "?#{query}" else "")
 
