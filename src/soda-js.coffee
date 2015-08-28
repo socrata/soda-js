@@ -87,7 +87,14 @@ expr =
   lt:  (column, literal) -> "#{column} < #{handleLiteral(literal)}"
   lte: (column, literal) -> "#{column} <= #{handleLiteral(literal)}"
   eq:  (column, literal) -> "#{column} = #{handleLiteral(literal)}"
-
+  
+# serialize object to querystring
+serialize = (obj) ->
+  str = []
+  for p of obj
+    if obj.hasOwnProperty(p)
+      str.push encodeURIComponent(p) + '=' + encodeURIComponent(obj[p])
+  str.join '&'
 
 class Connection
   constructor: (@dataSite, @sodaOpts = {}) ->
@@ -141,7 +148,7 @@ class Connection
 # main class
 class Consumer
   constructor: (@dataSite, @sodaOpts = {}) ->
-    @connection = new Connection(dataSite, sodaOpts)
+    @connection = new Connection(@dataSite, @sodaOpts)
 
   query: ->
     new Query(this)
@@ -240,16 +247,27 @@ class Query
   offset: (offset) -> @_offset = offset; this
 
   limit: (limit) -> @_limit = limit; this
-
-  getRows: ->
+  
+  getOpts: ->
     opts = method: 'get'
-
+    
     throw new Error('no dataset given to work against!') unless @_datasetId?
     opts.path = "/resource/#{@_datasetId}.json"
 
     queryComponents = this._buildQueryComponents()
     opts.query = {}
     opts.query['$' + k] = v for k, v of queryComponents
+    
+    opts
+    
+  getURL: ->
+    opts = this.getOpts()
+    query = serialize(opts.query)
+    
+    "https://#{@consumer.dataSite}#{opts.path}" + (if query then "?#{query}" else "")
+
+  getRows: ->
+    opts = this.getOpts()
 
     @consumer.connection.networker(opts)()
     @consumer.connection.emitter
