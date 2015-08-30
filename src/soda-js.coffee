@@ -87,7 +87,13 @@ expr =
   lt:  (column, literal) -> "#{column} < #{handleLiteral(literal)}"
   lte: (column, literal) -> "#{column} <= #{handleLiteral(literal)}"
   eq:  (column, literal) -> "#{column} = #{handleLiteral(literal)}"
-
+  
+# serialize object to querystring
+toQuerystring = (obj) ->
+  str = []
+  for own key, val of obj
+    str.push encodeURIComponent(key) + '=' + encodeURIComponent(val)
+  str.join '&'
 
 class Connection
   constructor: (@dataSite, @sodaOpts = {}) ->
@@ -240,16 +246,27 @@ class Query
   offset: (offset) -> @_offset = offset; this
 
   limit: (limit) -> @_limit = limit; this
-
-  getRows: ->
+  
+  getOpts: ->
     opts = method: 'get'
-
+    
     throw new Error('no dataset given to work against!') unless @_datasetId?
     opts.path = "/resource/#{@_datasetId}.json"
 
     queryComponents = this._buildQueryComponents()
     opts.query = {}
     opts.query['$' + k] = v for k, v of queryComponents
+    
+    opts
+    
+  getURL: ->
+    opts = this.getOpts()
+    query = toQuerystring(opts.query)
+    
+    "https://#{@consumer.dataSite}#{opts.path}" + (if query then "?#{query}" else "")
+
+  getRows: ->
+    opts = this.getOpts()
 
     @consumer.connection.networker(opts)()
     @consumer.connection.emitter
