@@ -141,7 +141,7 @@ class Connection
 # main class
 class Consumer
   constructor: (@dataSite, @sodaOpts = {}) ->
-    @connection = new Connection(dataSite, sodaOpts)
+    @connection = new Connection(@dataSite, @sodaOpts)
 
   query: ->
     new Query(this)
