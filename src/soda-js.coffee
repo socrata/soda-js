@@ -223,7 +223,7 @@ class Query
     @_group = []
     @_having = []
     @_order = []
-    @_offset = @_limit = null
+    @_offset = @_limit = @_q = null
 
   withDataset: (datasetId) -> @_datasetId = datasetId; this
 
@@ -247,6 +247,8 @@ class Query
 
   limit: (limit) -> @_limit = limit; this
   
+  q: (q) -> @_q = q; this
+
   getOpts: ->
     opts = method: 'get'
     
@@ -291,6 +293,8 @@ class Query
 
       query.offset = @_offset if isNumber(@_offset)
       query.limit = @_limit if isNumber(@_limit)
+      
+      query.q = @_q if @_q
 
     query
 
