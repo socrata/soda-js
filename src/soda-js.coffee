@@ -126,7 +126,7 @@ class Connection
     @emitter = emitter = new EventEmitter(@emitterOpts)
 
     # return the handler
-    handler = (response) ->
+    handler = (error, response) ->
       # TODO: possibly more granular handling?
       if response.ok
         if response.accepted
