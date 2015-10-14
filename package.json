@@ -18,5 +18,5 @@
     "test": "node_modules/expresso/bin/expresso test/*"
   },
   "main": "./lib/soda-js.js",
-  "version": "0.2.1"
+  "version": "0.2.2
 }
