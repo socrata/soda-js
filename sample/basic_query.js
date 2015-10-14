@@ -1,9 +1,9 @@
-var soda = require('soda-js');
+var soda = require('../lib/soda-js');
 
-var consumer = new soda.Consumer('explore.data.gov');
+var consumer = new soda.Consumer('open.whitehouse.gov');
 
 consumer.query()
-  .withDataset('644b-gaut')
+  .withDataset('p86s-ychb')
   .limit(5)
   .where({ namelast: 'SMITH' })
   .order('namelast')
