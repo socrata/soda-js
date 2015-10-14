@@ -159,7 +159,7 @@ class Consumer
 # Producer class
 class Producer
   constructor: (@dataSite, @sodaOpts = {}) ->
-    @connection = new Connection(dataSite, sodaOpts)
+    @connection = new Connection(@dataSite, @sodaOpts)
 
   operation: ->
     new Operation(this)
