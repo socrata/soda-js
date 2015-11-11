@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>soda-js sample</title>
+	</head>
+	<body>
+		<script src="../lib/soda-js.bundle.js"></script>
+		<script>
+			var consumer = new soda.Consumer('data.phila.gov');
+
+			consumer.query()
+				.withDataset('2pfz-fnns')
+				.limit(5)
+				.where({ issuing_agency: 'POLICE' })
+				.order('fine')
+				.getRows()
+					.on('success', function(rows) { console.log(rows); })
+					.on('error', function(error) { console.error(error); });
+		</script>
+	</body>
+</html>
