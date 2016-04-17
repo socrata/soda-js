@@ -17,7 +17,7 @@ httpClient = require('superagent')
 # internal util funcs
 isString = (obj) -> typeof obj == 'string'
 isArray = (obj) -> Array.isArray(obj)
-isNumber = (obj) -> Number.isFinite(obj)
+isNumber = (obj) -> isNaN(parseFloat(obj))
 extend = (target, sources...) -> (target[k] = v for k, v of source) for source in sources; null
 
 # it's really, really, really stupid that i have to solve this problem here
