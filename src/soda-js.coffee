@@ -15,9 +15,9 @@ EventEmitter = require('eventemitter2').EventEmitter2
 httpClient = require('superagent')
 
 # internal util funcs
-isString = (obj) -> toString.call(obj) == '[object String]'
-isArray = (obj) -> toString.call(obj) == '[object Array]'
-isNumber = (obj) -> toString.call(obj) == '[object Number]'
+isString = (obj) -> typeof obj == 'string'
+isArray = (obj) -> Array.isArray(obj)
+isNumber = (obj) -> !isNaN(parseFloat(obj))
 extend = (target, sources...) -> (target[k] = v for k, v of source) for source in sources; null
 
 # it's really, really, really stupid that i have to solve this problem here
