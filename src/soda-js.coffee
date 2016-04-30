@@ -106,9 +106,12 @@ class Connection
       maxListeners: 15
 
     @networker = (opts, data) ->
-      url = "https://#{@dataSite}#{opts.path}"
+      # if a sodaProxy is present, adjust the URL accordingly
+      hostPlusProxyIfSet = @dataSite
+      if(@sodaOpts?.sodaProxy?)
+        hostPlusProxyIfSet = "#{@sodaOpts.sodaProxy}/#{@dataSite}"
 
-      client = httpClient(opts.method, url)
+      client = httpClient(opts.method, "https://#{hostPlusProxyIfSet}#{opts.path}")
 
       client.set('Accept', "application/json") if data?
       client.set('Content-type', "application/json") if data?
@@ -264,8 +267,13 @@ class Query
   getURL: ->
     opts = this.getOpts()
     query = toQuerystring(opts.query)
+
+    # if a sodaProxy is present, adjust the URL accordingly
+    hostPlusProxyIfSet = @consumer.dataSite
+    if(@consumer.sodaOpts?.sodaProxy?)
+      hostPlusProxyIfSet = "#{@consumer.sodaOpts.sodaProxy}/#{@consumer.dataSite}"
     
-    "https://#{@consumer.dataSite}#{opts.path}" + (if query then "?#{query}" else "")
+    "https://#{hostPlusProxyIfSet}#{opts.path}" + (if query then "?#{query}" else "")
 
   getRows: ->
     opts = this.getOpts()
