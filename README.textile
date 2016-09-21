@@ -2,6 +2,16 @@ h1. soda-js "!https://secure.travis-ci.org/socrata/soda-js.png!":http://travis-c
 
 A client implementation of the Socrata Open Data API in Coffeescript and Javascript.
 
+h2. Important Note
+
+In order to access the SODA API via HTTPS, clients must now "support the Server Name Indication (SNI)":https://dev.socrata.com/changelog/2016/08/24/sni-now-required-for-https-connections.html extension to the TLS protocol. What does this mean? It means that if you're using @soda-js@, you must use a JavaScript VM that supports SNI:
+
+* "Internet Explorer 7+":https://en.wikipedia.org/wiki/Server_Name_Indication#Support
+* "Mozilla Firefox 2+":https://en.wikipedia.org/wiki/Server_Name_Indication#Support
+* "Apple Safari (all versions)":https://en.wikipedia.org/wiki/Server_Name_Indication#Support
+* "Google Chrome 6.0+":https://en.wikipedia.org/wiki/Server_Name_Indication#Support
+* "node.js 0.5.3+":https://github.com/nodejs/node/blob/e1643ccc5a5ecf7cb779472d244459469c9971a1/doc/changelogs/CHANGELOG_ARCHIVE.md#20110801-version-053-unstable
+
 h2. Supported Operations
 
 Supports both consumer and producer API, but does not currently support creating datasets or the import workflow.
