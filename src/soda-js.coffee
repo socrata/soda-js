@@ -11,7 +11,8 @@
 #    * we're inconsistent about validating query correctness. do we continue with catch-what-we-can,
 #      or do we just back off and leave all failures to the api to return?
 
-EventEmitter = require('eventemitter2').EventEmitter2
+eelib = require('eventemitter2')
+EventEmitter = eelib.EventEmitter2 || eelib
 httpClient = require('superagent')
 
 # internal util funcs
