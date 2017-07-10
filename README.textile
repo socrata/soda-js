@@ -37,6 +37,10 @@ consumer.query()
     .on('success', function(rows) { console.log(rows); })
     .on('error', function(error) { console.error(error); });
 
+p. Using 'like' in a where clause:
+
+bc.. .where("namelast like '%MITH'")
+
 h3. Producer API
 
 You can add, update, replace, delete, and upsert rows, as well as truncate a dataset.
