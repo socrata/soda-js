@@ -13,3 +13,12 @@ module.exports =
     assert.ok(query instanceof soda._internal.Query)
     assert.eql(query.consumer, consumer)
 
+  'create proxied query': (beforeExit, assert) ->
+    consumer = new soda.Consumer('soda.demo.socrata.com',{sodaProxy:'a-test-proxy.com/socrata'})
+    query = consumer.query()
+    assert.ok(query instanceof soda._internal.Query)
+    assert.eql(query.consumer, consumer)
+    query
+      .withDataset('a1b2-c3d4')
+      .limit(10)
+    assert.eql(query.getURL(),'https://a-test-proxy.com/socrata/soda.demo.socrata.com/resource/a1b2-c3d4.json?%24limit=10')
