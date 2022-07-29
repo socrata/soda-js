@@ -13,6 +13,10 @@
     {
       "name": "Clint Tseng",
       "email": "clint.tseng@socrata.com"
+    },
+    {
+      "name": "Jake Zwickler",
+      "email": "jazwickler@gmail.com"
     }
   ],
   "dependencies": {
