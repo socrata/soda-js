@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "eventemitter2": "~6.4.9",
-    "superagent": "^8.0.3"
+    "superagent": "^8.0.6"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",
