@@ -13,16 +13,22 @@
     {
       "name": "Clint Tseng",
       "email": "clint.tseng@socrata.com"
+    },
+    {
+      "name": "Jake Zwickler",
+      "email": "jazwickler@gmail.com"
     }
   ],
   "dependencies": {
-    "eventemitter2": "~0.4.14",
-    "superagent": "^3.7.0"
+    "eventemitter2": "~6.4.9",
+    "superagent": "^8.0.9"
   },
   "devDependencies": {
+    "@types/browserify": "^12.0.37",
+    "@types/superagent": "^4.1.18",
+    "browserify": "^17.0.0",
     "coffee-script": "~1.6.3",
-    "expresso": "~0.9.2",
-    "browserify": "^12.0.1"
+    "expresso": "~0.9.2"
   },
   "licenses": [
     {
@@ -36,5 +42,5 @@
     "build": "npm run coffee && npm run bundle"
   },
   "main": "./lib/soda-js.js",
-  "version": "0.2.4"
+  "version": "0.4.2"
 }
